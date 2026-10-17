@@ -1,0 +1,30 @@
+--- a/pjmedia/src/pjmedia-audiodev/coreaudio_dev.m	2026-10-14 23:31:20
++++ b/pjmedia/src/pjmedia-audiodev/coreaudio_dev.m	2026-10-14 23:31:20
+@@ -1677,6 +1677,27 @@
+         strm->rec_buf_count = 0;
+     }
+ 
++#if COREAUDIO_MAC
++    /* SIP Anywhere:  macOS voice processing lowers ("ducks") all other audio
++     * on the Mac for the whole call. Ask for the least ducking, and only while
++     * someone is speaking (macOS 14+). */
++    {
++        AudioComponentDescription d;
++        if (AudioComponentGetDescription(io_comp, &d) == noErr &&
++            d.componentSubType == kAudioUnitSubType_VoiceProcessingIO)
++        {
++            AUVoiceIOOtherAudioDuckingConfiguration duck;
++            duck.mEnableAdvancedDucking = true;
++            duck.mDuckingLevel = kAUVoiceIOOtherAudioDuckingLevelMin;
++            ostatus = AudioUnitSetProperty(*io_unit,
++                          kAUVoiceIOProperty_OtherAudioDuckingConfiguration,
++                          kAudioUnitScope_Global, 0, &duck, sizeof(duck));
++            PJ_LOG(3, (THIS_FILE, "Voice processing: other audio ducking set to "
++                       "minimum (%s)", ostatus == noErr ? "ok" : "failed"));
++        }
++    }
++#endif
++
+     /* Initialize the audio unit */
+     ostatus = AudioUnitInitialize(*io_unit);
+     if (ostatus != noErr) {

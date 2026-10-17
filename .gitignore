@@ -1,0 +1,9 @@
+# Build products
+.build/
+build/
+
+# PJSIP sources and build output (recreated by scripts/build-pjsip.sh)
+vendor/
+vendor
+
+.DS_Store
