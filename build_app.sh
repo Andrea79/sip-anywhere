@@ -5,15 +5,16 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-VERSION=1.0
-# Stable build. (On develop: "SIP Anywhere Dev" and a .dev identifier, so the two never share settings.)
-APP_NAME="SIP Anywhere"
-BUNDLE_ID=io.github.andrea79.SIPAnywhere
+VERSION=1.1-dev
+# Development build: its own name and identifier, so it never shares settings with the stable app.
+APP_NAME="SIP Anywhere Dev"
+BUNDLE_ID=io.github.andrea79.SIPAnywhere.dev
 MIN_MACOS=14.0
 # The project's page (e.g. on GitHub), linked in the About window; empty: no link.
 PROJECT_URL="https://github.com/Andrea79/sip-anywhere"
-# Stable builds are universal (Apple Silicon + Intel); develop defaults to arm64 only.
-ARCHS=${ARCHS:-arm64 x86_64}
+# Development builds: Apple Silicon only, to build faster (ARCHS="arm64 x86_64" for
+# both). Stable builds on main are always universal.
+ARCHS=${ARCHS:-arm64}
 
 if [ ! -f vendor/pjsip/lib/libpjsua.a ]; then
     echo "PJSIP is missing: run ./scripts/build-pjsip.sh first." >&2
