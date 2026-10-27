@@ -1115,8 +1115,13 @@ static void tone_timer_cb(pj_timer_heap_t *th, pj_timer_entry *e)
     PJ_UNUSED_ARG(th);
     e->id = 0;
     g_tone_mic_off = 0;
-    if (g_running)
-        connect_mic_to_calls(1);
+    if (!g_running)
+        return;
+    connect_mic_to_calls(1);
+    /* The tones are over: off the speaker, so that nothing keeps the sound device
+     * (and the microphone) open once the calls are over. */
+    if (g_tone_slot != PJSUA_INVALID_ID)
+        pjsua_conf_disconnect(g_tone_slot, 0);
 }
 
 int sip_play_keypad_tone(const char *digits)
@@ -1148,8 +1153,9 @@ int sip_play_keypad_tone(const char *digits)
             g_tone_slot = PJSUA_INVALID_ID;
             return -1;
         }
-        pjsua_conf_connect(g_tone_slot, 0);
     }
+    /* Connected only while tones play (see tone_timer_cb). */
+    pjsua_conf_connect(g_tone_slot, 0);
     for (; *digits && n < PJ_ARRAY_SIZE(d); ++digits) {
         pj_bzero(&d[n], sizeof(d[n]));
         d[n].digit = *digits;
