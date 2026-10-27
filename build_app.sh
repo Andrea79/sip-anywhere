@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-VERSION=1.0
+VERSION=1.0.1
 # Stable build. (On develop: "SIP Anywhere Dev" and a .dev identifier, so the two never share settings.)
 APP_NAME="SIP Anywhere"
 BUNDLE_ID=io.github.andrea79.SIPAnywhere

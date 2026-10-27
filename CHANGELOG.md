@@ -4,6 +4,14 @@ All notable changes to SIP Anywhere. Stable releases are on branch `main`
 (tags `v1.x`); new features are developed on `develop` and released here once
 they are confirmed on a real provider.
 
+## 1.0.1 — 2026-10-27
+
+- **Fixed:** after a call in which keys were pressed (with keypad tones on), the
+  microphone stayed open until the app quit: the macOS microphone indicator
+  stayed on and the app kept using about 10% CPU. The tone generator is now
+  connected to the speaker only while tones play, so the audio closes as usual
+  a second after hanging up.
+
 ## 1.0 — 2026-10-16
 
 First public release.
